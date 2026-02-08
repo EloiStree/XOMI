@@ -36,7 +36,7 @@ namespace XOMI.Unstore
 
         private void PushToAction( IndexIntegerDate indexIntegerDate)
         {
-            Console.WriteLine("PushToAction:" + indexIntegerDate.m_index + " " + indexIntegerDate.m_integer);
+            SC.WriteLine("PushToAction:" + indexIntegerDate.m_index + " " + indexIntegerDate.m_integer);
         }
     }
 }

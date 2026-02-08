@@ -66,10 +66,10 @@ namespace XOMI.Unstore
             catch (Exception e) {
 
                 ConsoleUI.DrawLine();
-                Console.WriteLine("Impossible to create the controller. Error happened:" + e.StackTrace);
+                SC.WriteLine("Impossible to create the controller. Error happened:" + e.StackTrace);
                 ConsoleUI.DrawLine();
-                Console.WriteLine("Make sure you installed ViGEm.");
-                Console.WriteLine("Contact me on GitHub or Discord for Help");
+                SC.WriteLine("Make sure you installed ViGEm.");
+                SC.WriteLine("Contact me on GitHub or Discord for Help");
             }
 
             try
@@ -87,7 +87,7 @@ namespace XOMI.Unstore
                     {
                         string s = m_udpPackageReceived.Dequeue();
                         //if (StaticVariable.m_debugDevMessage)
-                            Console.WriteLine("Received UDP Message:" + s);
+                            SC.WriteLine("Received UDP Message:" + s);
                         parser.TryToAppendParseToWaitingActions(s);
                     }
                     CheckForActionToExecute(actionInWaitingToBeExecuted, readyToBeExecutedAndRemoved);
@@ -95,7 +95,7 @@ namespace XOMI.Unstore
                     bool requestFlush = false;
                     for (int i = 0; i < readyToBeExecutedAndRemoved.Count; i++)
                     {
-                      //  Console.WriteLine("E#" + readyToBeExecutedAndRemoved.GetType());
+                      //  SC.WriteLine("E#" + readyToBeExecutedAndRemoved.GetType());
                         if (readyToBeExecutedAndRemoved[i] is TimedXBoxAction_ApplyChange)
                         {
                             TimedXBoxAction_ApplyChange toApply = (TimedXBoxAction_ApplyChange)readyToBeExecutedAndRemoved[i];
@@ -136,7 +136,7 @@ namespace XOMI.Unstore
                     }
                     if (requestFlush)
                     {
-                        Console.WriteLine("Flush Requested, Deleted:" + actionInWaitingToBeExecuted.Count);
+                        SC.WriteLine("Flush Requested, Deleted:" + actionInWaitingToBeExecuted.Count);
                         actionInWaitingToBeExecuted.Clear();
                         requestFlush = false;
                     }
@@ -149,9 +149,9 @@ namespace XOMI.Unstore
             }
             catch (Exception e)
             {
-                Console.WriteLine("An exception happen:" + e.StackTrace);
-                Console.WriteLine("Contact me if you need help: https://eloistree.page.link/discord");
-                Console.WriteLine("Did you install ViGemBus?\n https://github.com/ViGEm/ViGEmBus/releases/tag/v1.21.442.0");
+                SC.WriteLine("An exception happen:" + e.StackTrace);
+                SC.WriteLine("Contact me if you need help: https://eloistree.page.link/discord");
+                SC.WriteLine("Did you install ViGemBus?\n https://github.com/ViGEm/ViGEmBus/releases/tag/v1.21.442.0");
             }
         }
 
@@ -180,7 +180,7 @@ namespace XOMI.Unstore
             bool succeedToCreatePort=false;
             while (!succeedToCreatePort && i<20) {
 
-                Console.WriteLine("Attempt udp connection to " + (port+i));
+                SC.WriteLine("Attempt udp connection to " + (port+i));
                 if (IsPortOpen(port + i))
                 {
                     Thread.Sleep(10);

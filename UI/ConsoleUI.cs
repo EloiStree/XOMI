@@ -14,16 +14,16 @@ namespace XOMI.UI
     {
         public static void DisplayWelcomeMessage()
         {
-            Console.WriteLine("XOMI");
-            Console.WriteLine("");
-            Console.WriteLine("Required to be installed:\n https://github.com/ViGEm/ViGEmBus/releases/tag/v1.21.442.0");
+            SC.WriteLine("XOMI");
+            SC.WriteLine("");
+            SC.WriteLine("Required to be installed:\n https://github.com/ViGEm/ViGEmBus/releases/tag/v1.21.442.0");
 
-            Console.WriteLine("");
-            Console.WriteLine("XOMI Doc & code here:\n https://github.com/EloiStree/2022_01_24_XOMI");
-            Console.WriteLine("Support my work in general:\n https://eloi.page.link/support");
+            SC.WriteLine("");
+            SC.WriteLine("XOMI Doc & code here:\n https://github.com/EloiStree/2022_01_24_XOMI");
+            SC.WriteLine("Support my work in general:\n https://eloi.page.link/support");
 
          
-            Console.WriteLine("");
+            SC.WriteLine("");
             DrawLine();
         }
 
@@ -36,12 +36,12 @@ namespace XOMI.UI
 
         public static void DrawLine()
         {
-            Console.WriteLine("--------------------");
+            SC.WriteLine("--------------------");
         }
 
         public static void DisplayIPAndPortToTarget(string[] ips)
         {
-            Console.WriteLine("IP: " + string.Join(", ", ips));
+            SC.WriteLine("IP: " + string.Join(", ", ips));
         }
     }
 }

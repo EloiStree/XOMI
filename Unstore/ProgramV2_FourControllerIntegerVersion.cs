@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Reflection;
 using System.Threading;
+using System.Timers;
 using XOMI.InfoHolder;
 using XOMI.Int1899;
 using XOMI.TimedAction;
@@ -29,18 +31,15 @@ namespace XOMI.Unstore
 
 
 
-        public static void Run(string[] args)
+        public static void Run(string[] args, CancellationToken cancelToken)
         {
 
-            // Use joy.cpl to check if it works.
-
-            // IF b1355  ( remove the integer 1355 )
             for (int i = 0; i < args.Length; i++) { 
                 if (args[i].Length>0 && args[i][0] == 'b' ){
                     if (int.TryParse( args[i].Replace("b", ""), out int integer)) 
                     {
                         m_banInput.Add(integer);
-                        Console.WriteLine("Banned integer: " + integer);
+                        SC.WriteLine("Banned integer: " + integer);
                     }
                 }
             }
@@ -83,13 +82,10 @@ namespace XOMI.Unstore
 
 
 
-            Console.WriteLine("Port Integer: " + 3615);
-            Console.WriteLine("Index Mapping: https://github.com/EloiStree/2024_08_29_ScratchToWarcraft.git");
+            SC.WriteLine("Port Integer: " + 3615);
+            SC.WriteLine("Index Mapping: https://github.com/EloiStree/2024_08_29_ScratchToWarcraft.git");
 
-
-
-
-            Console.WriteLine("Did you install ViGemBus?\n https://github.com/ViGEm/ViGEmBus/releases/tag/v1.21.442.0");
+            SC.WriteLine("Did you install ViGemBus?\n https://github.com/ViGEm/ViGEmBus/releases/tag/v1.21.442.0");
 
 
             m_integerToActions = new IntegerToActions[4];
@@ -101,12 +97,18 @@ namespace XOMI.Unstore
             }
 
 
+            MillisecondsDelayer delayer = new MillisecondsDelayer();
+
+            delayer.m_onExecuteDelayedIndexIntegerAction = ProcessIndexIntegerReceviedWithoutDate;
+            delayer.m_onExecuteDelayedIntegerAction = ProcessIndexIntegerReceviedWithoutDate;
+
+
 
             //bool useAllFeatureTest = false;
             //if (useAllFeatureTest) {
             //    foreach (var action in m_integerToActions[0].m_actions)
             //    {
-            //        Console.WriteLine("Test:" + action.m_name);
+            //        SC.WriteLine("Test:" + action.m_name);
             //        Thread.Sleep(2000);
             //        for (int i = 0; i < 4; i++)
             //        {
@@ -134,10 +136,10 @@ namespace XOMI.Unstore
 
             foreach (int b in banIntegersText)
             {
-                Console.WriteLine("Ban Input:"+b);
+                SC.WriteLine("Ban Input:"+b);
             }
 
-            Console.WriteLine("Ready to loop for udp action.");
+            SC.WriteLine("Ready to loop for udp action.");
             while (true)
             {
                // udpText.UpdateTheAutodestructionOfThreadTimer();
@@ -145,7 +147,7 @@ namespace XOMI.Unstore
                 while (queueBytes.Count > 0) { 
                 
                     byte[] bytes = queueBytes.Dequeue();
-                    Console.WriteLine($"{bytes.Length}: {bytes}");
+                    SC.WriteLine($"{bytes.Length}: {bytes}");
                     if (bytes.Length == 4)
                     {
                         int integer = BitConverter.ToInt32(bytes, 0);
@@ -162,20 +164,63 @@ namespace XOMI.Unstore
 
                         int index = BitConverter.ToInt32(bytes, 0);
                         int value = BitConverter.ToInt32(bytes, 4);
-                        DateTime date = DateTime.FromBinary(BitConverter.ToInt64(bytes, 8));
-                        ProcessIndexIntegerReceviedWithoutDate(index, value);
+
+
+                        // NEED TO BE REFACTORED BECAUSE WE NEED NTP DATA UTC TO WORKS.
+                        // LEARNED FROM UNTIY NOT APPLY HERE YET.
+                        ulong time = BitConverter.ToUInt64(bytes, 8);
+                        if (time < 1000 * 3600 * 25)
+                        {
+                            delayer.AppendDelayedAction(index, value, time);
+                        }
+                        else { 
+
+                            ProcessIndexIntegerReceviedWithoutDate(index, value);
+                        }
                     }
                     else if (bytes.Length == 12)
                     {
                         int value = BitConverter.ToInt32(bytes, 0);
+                        // NEED TO BE REFACTORED BECAUSE WE NEED NTP DATA UTC TO WORKS.
+                        // LEARNED FROM UNTIY NOT APPLY HERE YET.
+                        ulong time = BitConverter.ToUInt64(bytes, 4);
+                        if (time < 1000 * 3600 * 25)
+                        {
+                            delayer.AppendDelayedAction( value, time);
+                        }
+                        else
+                        {
                         ProcessIndexIntegerReceviedWithoutDate(value);
+
+                        }
+                    }
+                    else if (bytes.Length> 16 && bytes.Length % 16==0 ) {
+
+                        // Cut the block in to piece
+                        for (int i = 0; i < bytes.Length; i+=16) { 
+                            int index = BitConverter.ToInt32(bytes, i);
+                            int value = BitConverter.ToInt32(bytes, i+4);
+                            ulong time = BitConverter.ToUInt64(bytes, i+8);
+                            if (time < 1000*3600*25) { 
+                                DateTime date = DateTime.UtcNow.AddMilliseconds(time);
+                                delayer.AppendDelayedAction( index, value, time);
+                            }
+                            else
+                            {
+                                // NEED TO BE REFACTORED BECAUSE WE NEED NTP DATA UTC TO WORKS.
+                                // LEARNED FROM UNTIY NOT APPLY HERE YET.
+                                ProcessIndexIntegerReceviedWithoutDate(index, value);
+                            }
+                        }
                     }
                 }
-                
+
+                delayer.CheckForActionToExecute();
                 Thread.Sleep(1);
             }
 
         }
+
 
         public static void ProcessIndexIntegerReceviedWithoutDate(int index, int value)
         {
@@ -221,7 +266,7 @@ namespace XOMI.Unstore
         private static void ProcessValueAsScratchToWarcraftButton(int playerId, int value999999)
         {
             if (IsBanGamepadButton(value999999)) { 
-                Console.WriteLine($"Ban Gamepad Button: {value999999} for player {playerId}");
+                SC.WriteLine($"Ban Gamepad Button: {value999999} for player {playerId}");
                 return;
             }
             int indexGamepad = playerId;
@@ -286,7 +331,7 @@ namespace XOMI.Unstore
                             integerToActions[selectGamepad].m_executer.Execute(doubleJoystick);
                             // Print a debug of the doubleJoystick
 
-                            //Console.WriteLine($"Debug Double Joystick: {gamepadNumber} {percent99000000LX} {percent00990000LY} {percent00009900RX} {percent00000099RY}");
+                            //SC.WriteLine($"Debug Double Joystick: {gamepadNumber} {percent99000000LX} {percent00990000LY} {percent00009900RX} {percent00000099RY}");
 
 
                         }
@@ -320,7 +365,7 @@ namespace XOMI.Unstore
                     // Scratch to warcraft commande
 
                     ProcessValueAsScratchToWarcraftButton(playerId, value999999);
-                    Console.WriteLine($"Player {playerId} Scratch to Warcraft Command: {value999999}");
+                    SC.WriteLine($"Player {playerId} Scratch to Warcraft Command: {value999999}");
                 }
                 else if (tag == 20)
                 {
@@ -333,7 +378,7 @@ namespace XOMI.Unstore
                     byte leftAxisY = (byte)((value999999 / 10000) % 10);
                     byte leftAxisX = (byte)((value999999 / 100000) % 10);
 
-                    Console.WriteLine($"Player {playerId} Trigger:  {triggerLeft} {triggerRight} {leftAxisX} {leftAxisY} Axis 9 9 9 9: {rightAxisX} {rightAxisY}");
+                    SC.WriteLine($"Player {playerId} Trigger:  {triggerLeft} {triggerRight} {leftAxisX} {leftAxisY} Axis 9 9 9 9: {rightAxisX} {rightAxisY}");
 
                     Pourcent01From9(triggerLeft, out float percentTriggerLeft);
                     Pourcent01From9(triggerRight, out float percentTriggerRight);
@@ -391,7 +436,7 @@ namespace XOMI.Unstore
                     //left x
                     float percentLeftX = 0.0f;
                     Pourcent11From999999(value999999, out percentLeftX);
-                    Console.WriteLine($"Player {playerId} Joystick Left X: {percentLeftX}");
+                    SC.WriteLine($"Player {playerId} Joystick Left X: {percentLeftX}");
                     actions.Add(new TimedXBoxAction_AxisChange(utcNow, XBoxAxisInputType.JoystickLeft_Left2Right, percentLeftX));
                 }
                 else if (tag == 24)
@@ -399,7 +444,7 @@ namespace XOMI.Unstore
                     //right y
                     float percentLeftY = 0.0f;
                     Pourcent11From999999(value999999, out percentLeftY);
-                    Console.WriteLine($"Player {playerId} Joystick Left Y: {percentLeftY}");
+                    SC.WriteLine($"Player {playerId} Joystick Left Y: {percentLeftY}");
                     actions.Add(new TimedXBoxAction_AxisChange(utcNow, XBoxAxisInputType.JoystickLeft_Down2Up, percentLeftY));
 
                 }

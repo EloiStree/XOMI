@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using XOMI;
 using XOMI.TimedAction;
 using XOMI.Unstore.Xbox;
 
@@ -13,13 +14,13 @@ public class IntegerToActions {
             if (m_actions[i].IsPressing(value)) { 
                 m_actions[i].Press();
                 if(m_useDebugConsole)
-                    System.Console.WriteLine($"Pressed ({value}):{m_actions[i].GetDescription()}");
+                    SC.WriteLine($"Pressed ({value}):{m_actions[i].GetDescription()}");
                 return;
             }
             if (m_actions[i].IsReleasing(value)) { 
                 m_actions[i].Release();
                 if (m_useDebugConsole)
-                    System.Console.WriteLine($"Release ({value}):{m_actions[i].GetDescription()}");
+                    SC.WriteLine($"Release ({value}):{m_actions[i].GetDescription()}");
                 return;
             }
         }
@@ -28,7 +29,7 @@ public class IntegerToActions {
         
 
         if (m_useDebugConsole)
-            System.Console.WriteLine($"No action for ({value})");
+            SC.WriteLine($"No action for ({value})");
     }
 
     public class PressReleaseIntegerAction {

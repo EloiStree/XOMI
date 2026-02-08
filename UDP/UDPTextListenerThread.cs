@@ -85,7 +85,7 @@ namespace XOMI.UDP
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e.ToString());
+                    SC.WriteLine(e.ToString());
                     m_wantThreadAlive = false;
                 }
             }

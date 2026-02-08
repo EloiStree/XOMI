@@ -73,7 +73,7 @@ namespace XOMI.Unstore.Xbox
         {
 
             if (StaticVariable.m_debugDevMessage)
-                Console.WriteLine(string.Format("Gamepad {0}| {1} {2} {3} {4}",
+                SC.WriteLine(string.Format("Gamepad {0}| {1} {2} {3} {4}",
                     toDo.GetWhenToExecute().ToString("yyyy-dd-HH-mm-ss-fff"),
                     toDo.GetJoystickLeftX(),
                     toDo.GetJoystickLeftY(),
@@ -90,7 +90,7 @@ namespace XOMI.Unstore.Xbox
         public void Execute(TimedXBoxAction_ApplyChange toDo)
         {
             if (StaticVariable.m_debugDevMessage)
-                Console.WriteLine(string.Format("{0}| {1}{3} {2}", toDo.GetWhenToExecute().ToString("yyyy-dd-HH-mm-ss-fff"),
+                SC.WriteLine(string.Format("{0}| {1}{3} {2}", toDo.GetWhenToExecute().ToString("yyyy-dd-HH-mm-ss-fff"),
                     toDo.GetPressionType(), toDo.GetInputType()
                 , toDo.GetPressionType() == PressType.Press ? "↓" : "↑"));
             bool pression = toDo.GetPressionType() == PressType.Press;
@@ -186,7 +186,7 @@ namespace XOMI.Unstore.Xbox
         public void Execute(TimedXBoxAction_AxisChange toDo)
         {
             if (StaticVariable.m_debugDevMessage)
-                Console.WriteLine(string.Format("GG {0}| {1} {2} ",
+                SC.WriteLine(string.Format("GG {0}| {1} {2} ",
                     toDo.GetWhenToExecute().ToString("yyyy-dd-HH-mm-ss-fff"),
                     toDo.GetInputType(),
                     toDo.GetPercentToApply()));
@@ -224,7 +224,7 @@ namespace XOMI.Unstore.Xbox
         public void Execute(TimedXBoxAction_JoysticksChange toDo)
         {
             if (StaticVariable.m_debugDevMessage)
-                Console.WriteLine(string.Format("GG {0}| {1} {2} {3} ",
+                SC.WriteLine(string.Format("GG {0}| {1} {2} {3} ",
                     toDo.GetWhenToExecute().ToString("yyyy-dd-HH-mm-ss-fff"),
                     toDo.GetInputType(),
                     toDo.GetPercentHorizontalLeftRightToApply(),
@@ -302,7 +302,7 @@ namespace XOMI.Unstore.Xbox
             controller.SetButtonState(Xbox360Button.Back, false);
 
             if (StaticUserPreference.m_wantDebugInfo)
-                Console.WriteLine("Released All");
+                SC.WriteLine("Released All");
         }
 
         public void Execute(TimedXBoxAction_ReleaseAllButMenu action) {
@@ -326,7 +326,7 @@ namespace XOMI.Unstore.Xbox
             controller.SetButtonState(Xbox360Button.RightShoulder, false);
 
             if (StaticUserPreference.m_wantDebugInfo)
-                Console.WriteLine("Released All");
+                SC.WriteLine("Released All");
 
         }
 

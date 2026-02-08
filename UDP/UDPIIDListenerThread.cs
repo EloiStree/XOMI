@@ -61,7 +61,7 @@ namespace XOMI.UDP
         private void ChechUdpClientMessageInComing()
         {
 
-            Console.WriteLine("Start Thread UDP Int");
+            SC.WriteLine("Start Thread UDP Int");
 
             if (m_listener == null)
             {
@@ -77,7 +77,7 @@ namespace XOMI.UDP
                 {
 
                     byte[] receiveBytes = m_listener.Receive(ref m_ipEndPoint).ToArray();
-                    Console.WriteLine($"Debug Received Udp: {receiveBytes.Length}|{receiveBytes}");
+                    SC.WriteLine($"Debug Received Udp: {receiveBytes.Length}|{receiveBytes}");
                     // Must be 16 ,12,8,4
                     if (receiveBytes.Length == 16
                         || receiveBytes.Length == 12
@@ -89,11 +89,11 @@ namespace XOMI.UDP
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e.ToString());
+                    SC.WriteLine(e.ToString());
                     m_wantThreadAlive = false;
                 }
             }
-            Console.WriteLine("End Thread UDP Int");
+            SC.WriteLine("End Thread UDP Int");
         }
     }
 

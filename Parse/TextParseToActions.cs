@@ -256,12 +256,12 @@ namespace XOMI.Parse
                 //If Pression type only
                 m = ConvertPressReleaseToUnderScores(m);
 
-                Console.WriteLine("m " + m);
+                SC.WriteLine("m " + m);
                 string aliasName = GetFrontOfSpliter(m);
                 GetTimeAfterSplitter(parseItemsAsString[i], out bool hasSpliter, out bool hasValideTime, out int timeInMilliseconds);
 
                 m_boolAlias.Get(aliasName, out bool found, out XBoxInputType inputType);
-                Console.WriteLine("tdd |" + aliasName + "|" + string.Join(" # ", hasSpliter, hasValideTime, timeInMilliseconds, inputType));
+                SC.WriteLine("tdd |" + aliasName + "|" + string.Join(" # ", hasSpliter, hasValideTime, timeInMilliseconds, inputType));
 
                 if (hasSpliter && m.IndexOf('_')>-1 )
                 {
@@ -304,14 +304,14 @@ namespace XOMI.Parse
                         else
                             parseItems.Add(new ParseItem_DelayNextItems(m_millisecondsBetweenPress));
                         parseItems.Add(new ParseItem_PressInput(PressType.Release, inputType));
-                        Console.WriteLine("t " + aliasName + " " + inputType);
+                        SC.WriteLine("t " + aliasName + " " + inputType);
                         continue;
                     }
 
                 }
                 else if(!hasSpliter)
                 {
-                    Console.WriteLine("i " + aliasName + " " + inputType);
+                    SC.WriteLine("i " + aliasName + " " + inputType);
                     if (found && inputType != XBoxInputType.Undefined)
                     {
                         parseItems.Add(new ParseItem_PressInput(PressType.Press, inputType));
@@ -334,7 +334,7 @@ namespace XOMI.Parse
                 if (parseItems[i] is ParseItem_PressInput)
                 {
                     ParseItem_PressInput item = (ParseItem_PressInput)parseItems[i];
-                    // Console.WriteLine(string.Format("{0}| {1}-{2}", timeCount.ToString("yyyy-dd-HH-mm-ss-fff"), item.press, item.inputType));
+                    // SC.WriteLine(string.Format("{0}| {1}-{2}", timeCount.ToString("yyyy-dd-HH-mm-ss-fff"), item.press, item.inputType));
                     actions.Add(new TimedXBoxAction_ApplyChange(timeCount, item.press, item.inputType));
                 }
                 if (parseItems[i] is ParseItem_OneAxisPercent)

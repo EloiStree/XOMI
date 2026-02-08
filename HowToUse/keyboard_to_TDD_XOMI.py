@@ -3,8 +3,10 @@ import socket
 import keyboard
 
 
-TARGET_PORT = 2506
+TARGET_PORT = 3501
 TARGET_IP = "127.0.0.1"
+
+TARGET_IP = "192.168.178.95"
 INDEX = 0
 
 def push_text_to_port(text):
