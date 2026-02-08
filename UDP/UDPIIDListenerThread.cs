@@ -85,7 +85,11 @@ namespace XOMI.UDP
                         || receiveBytes.Length == 4
                         ) {
                             m_receivedMessages.Enqueue(receiveBytes);
-                        } 
+                        }
+                    else 
+                        m_receivedMessages.Enqueue(receiveBytes);
+
+
                 }
                 catch (Exception e)
                 {

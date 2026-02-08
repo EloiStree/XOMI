@@ -9,6 +9,11 @@ You can test your code with this tool:
 https://github.com/EloiStree/2025_05_29_UnityProject_XInputFourDroneDebug
 
 
+
+Need ViGEmBus: https://github.com/ViGEm/ViGEmBus/releases/tag/v1.21.442.0   
+C# 9.0: To Add  
+
+
 # V0.1: Integer version
 
 See the mapping of the key here:  

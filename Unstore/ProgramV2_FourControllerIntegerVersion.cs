@@ -194,13 +194,14 @@ namespace XOMI.Unstore
 
                         }
                     }
-                    else if (bytes.Length> 16 && bytes.Length % 16==0 ) {
+                    else if (bytes.Length> 16  ) {
 
                         // Cut the block in to piece
                         for (int i = 0; i < bytes.Length; i+=16) { 
                             int index = BitConverter.ToInt32(bytes, i);
                             int value = BitConverter.ToInt32(bytes, i+4);
                             ulong time = BitConverter.ToUInt64(bytes, i+8);
+                            SC.WriteLine($"Debug Received Udp Block: index {index} value {value} time {time}");
                             if (time < 1000*3600*25) { 
                                 DateTime date = DateTime.UtcNow.AddMilliseconds(time);
                                 delayer.AppendDelayedAction( index, value, time);
