@@ -11,7 +11,7 @@ https://github.com/EloiStree/2025_05_29_UnityProject_XInputFourDroneDebug
 
 
 Need ViGEmBus: https://github.com/ViGEm/ViGEmBus/releases/tag/v1.21.442.0   
-C# 9.0: To Add  
+C# 9.0: https://aka.ms/dotnet-core-applaunch?framework=Microsoft.NETCore.App&framework_version=9.0.0&arch=x64&rid=win-x64&os=win10 
 
 
 # V0.1: Integer version
